@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 import { Settings as SettingsIcon, User, Bell, Palette, Key, Check, Save, Sparkles, Shield } from 'lucide-react';
 import { useAuth, getUserDisplayName, getUserAvatar, getUserEmail } from '@/lib/auth';
+import { setTheme } from '@/components/ThemeProvider';
 import { UserProfile } from '@/types';
 
 export default function SettingsPage() {
@@ -18,7 +19,12 @@ export default function SettingsPage() {
   };
   const [profile, setProfile] = useState<UserProfile>({
     fullName: '', username: '', email: '', avatar: '',
-    bio: '', theme: 'dark', language: 'English (US)',
+    bio: '',
+    // Initialise theme from localStorage so buttons reflect current selection
+    theme: (typeof window !== 'undefined'
+      ? (localStorage.getItem('verigen_theme') as 'dark' | 'light' | 'system') ?? 'dark'
+      : 'dark'),
+    language: 'English (US)',
     notifications: { emailAlerts: true, reportComplete: true, weeklyDigest: false },
     defaultMode: 'Deep Research',
   });
@@ -185,7 +191,10 @@ export default function SettingsPage() {
                         key={t}
                         type="button"
                         onClick={() => {
-                          setProfile((prev) => ({ ...prev, theme: t as 'dark' | 'light' | 'system' }));
+                          const chosen = t as 'dark' | 'light' | 'system';
+                          setProfile((prev) => ({ ...prev, theme: chosen }));
+                          // Persist to localStorage and apply to document immediately
+                          setTheme(chosen);
                         }}
                         className={`py-3 px-4 rounded-xl border text-center text-xs font-semibold capitalize transition-all ${
                           profile.theme === t

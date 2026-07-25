@@ -34,7 +34,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
     { name: 'Saved Reports', href: '/saved', icon: Bookmark },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'Admin Gateway', href: '/admin/login', icon: ShieldCheck },
   ];
 
   const content = (

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search, Bell, Menu, Sparkles, LogOut } from 'lucide-react';
-import { useAuth, getUserDisplayName, getUserAvatar, getUserEmail } from '@/lib/auth';
+import { useAuth, getUserEmail } from '@/lib/auth';
+import { useProfile, getProfileDisplayName, getProfileAvatar } from '@/lib/useProfile';
 
 interface TopbarProps {
   onMenuClick?: () => void;
@@ -12,14 +13,27 @@ interface TopbarProps {
 
 export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   const router = useRouter();
-  const { user, loading, signOut } = useAuth();
-  const [searchQuery,        setSearchQuery]        = useState('');
-  const [showNotifications,  setShowNotifications]  = useState(false);
-  const [showProfileMenu,    setShowProfileMenu]     = useState(false);
+  const { user, loading: authLoading, signOut } = useAuth();
+  const { profile, profileLoading } = useProfile();
 
-  const displayName = loading ? '' : getUserDisplayName(user);
-  const avatarUrl   = loading ? '' : getUserAvatar(user);
-  const email       = loading ? '' : getUserEmail(user);
+  const [searchQuery,       setSearchQuery]       = useState('');
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu,   setShowProfileMenu]   = useState(false);
+
+  const isLoading = authLoading || profileLoading;
+
+  const email       = getUserEmail(user);
+  const fallback    = user?.user_metadata?.full_name ?? email.split('@')[0] ?? 'Researcher';
+  const displayName = isLoading ? '' : getProfileDisplayName(profile, fallback);
+  const avatarUrl   = isLoading ? '' : getProfileAvatar(profile, displayName || fallback);
+
+  // Re-render when profile saved from Settings page
+  const [, forceUpdate] = useState(0);
+  useEffect(() => {
+    const handler = () => forceUpdate((n) => n + 1);
+    window.addEventListener('verigen_profile_updated', handler);
+    return () => window.removeEventListener('verigen_profile_updated', handler);
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +55,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
           </button>
         )}
 
-        {/* Global Quick Search */}
         <form onSubmit={handleSearchSubmit} className="relative w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -56,7 +69,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
 
       {/* Right section */}
       <div className="flex items-center gap-3 shrink-0">
-        {/* New Research Quick Button */}
         <Link
           href="/research"
           className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#6C63FF] to-[#8B5CF6] text-white text-xs font-semibold shadow-md shadow-[#6C63FF]/20 hover:opacity-90 transition-opacity"
@@ -84,17 +96,16 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
               <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
                 <p className="font-medium text-slate-200">Welcome to VeriGen AI</p>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  You are signed in as {email || displayName}. Start a new research query!
+                  Signed in as {email || displayName}. Start a new research query!
                 </p>
               </div>
             </div>
           )}
         </div>
 
-        {/* User Profile Badge + dropdown */}
+        {/* User Profile Badge */}
         <div className="relative">
-          {loading ? (
-            /* Skeleton placeholder while session is loading */
+          {isLoading ? (
             <div className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-xl bg-white/5 border border-white/10">
               <div className="w-7 h-7 rounded-lg bg-white/10 animate-pulse" />
               <div className="hidden lg:block space-y-1">
@@ -122,8 +133,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             </button>
           )}
 
-          {/* Profile dropdown menu */}
-          {showProfileMenu && !loading && (
+          {showProfileMenu && !isLoading && (
             <div className="absolute right-0 mt-2 w-52 bg-[#111827] border border-white/10 rounded-2xl shadow-2xl p-2 z-50 text-xs space-y-1">
               <div className="px-3 py-2 border-b border-white/10 mb-1">
                 <div className="font-semibold text-white text-sm truncate">{displayName}</div>
@@ -145,7 +155,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             </div>
           )}
         </div>
-
       </div>
     </header>
   );

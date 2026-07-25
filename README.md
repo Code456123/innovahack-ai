@@ -154,27 +154,27 @@ This collaborative workflow significantly improves the reliability and transpare
 
 ## 🔐 Login
 
-<img width="515" height="652" alt="Screenshot 2026-07-25 235315" src="https://github.com/user-attachments/assets/344996d6-41ee-4c0e-8cf4-d5a9e2bee426" />
+<img width="350"  alt="Screenshot 2026-07-25 235315" src="https://github.com/user-attachments/assets/344996d6-41ee-4c0e-8cf4-d5a9e2bee426" />
 
 
 ---
 
 ## 📝 Sign Up
 
-<img width="558" height="716" alt="Screenshot 2026-07-25 235401" src="https://github.com/user-attachments/assets/0fc060d0-6cc9-4552-81fd-541138fcbe53" />
+<img width="350"  alt="Screenshot 2026-07-25 235401" src="https://github.com/user-attachments/assets/0fc060d0-6cc9-4552-81fd-541138fcbe53" />
 
 ---
 
 ## 🏠 Dashboard
 
-<img width="1476" height="668" alt="Screenshot 2026-07-25 235303" src="https://github.com/user-attachments/assets/4934a037-0f76-4813-8c6a-3fe7d0534c1c" />
+<img width="900" alt="Screenshot 2026-07-25 235303" src="https://github.com/user-attachments/assets/4934a037-0f76-4813-8c6a-3fe7d0534c1c" />
 
 
 ---
 
 ## 🔍 New Research Workspace
 
-<img width="1185" height="605" alt="Screenshot 2026-07-25 234503" src="https://github.com/user-attachments/assets/835f6551-b330-46b0-9c69-6e563f65de49" />
+<img width="900" alt="Screenshot 2026-07-25 234503" src="https://github.com/user-attachments/assets/835f6551-b330-46b0-9c69-6e563f65de49" />
 
 
 ---
@@ -182,7 +182,7 @@ This collaborative workflow significantly improves the reliability and transpare
 
 ## 🧠 System Architecture
 
-<img width="697" height="600" alt="Screenshot 2026-07-26 002212" src="https://github.com/user-attachments/assets/a4921dc8-cd89-4cf4-9422-ce3abc26c0c6" />
+<img width="500" alt="Screenshot 2026-07-26 002212" src="https://github.com/user-attachments/assets/a4921dc8-cd89-4cf4-9422-ce3abc26c0c6" />
 
 # 📂 Folder Structure
 

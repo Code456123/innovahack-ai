@@ -31,6 +31,7 @@ Our goal is to reduce AI hallucinations and improve transparency by validating e
 
 ---
 
+
 # 🚨 Problem Statement
 
 Generative AI models are powerful research assistants but often produce **hallucinations**, unsupported claims, and misinformation.
@@ -153,49 +154,35 @@ This collaborative workflow significantly improves the reliability and transpare
 
 ## 🔐 Login
 
-![Login](./screenshots/login.png)
+<img width="515" height="652" alt="Screenshot 2026-07-25 235315" src="https://github.com/user-attachments/assets/344996d6-41ee-4c0e-8cf4-d5a9e2bee426" />
+
 
 ---
 
 ## 📝 Sign Up
 
-![Sign Up](./screenshots/signup.png)
+<img width="558" height="716" alt="Screenshot 2026-07-25 235401" src="https://github.com/user-attachments/assets/0fc060d0-6cc9-4552-81fd-541138fcbe53" />
 
 ---
 
 ## 🏠 Dashboard
 
-![Dashboard](./screenshots/dashboard.png)
+<img width="1476" height="668" alt="Screenshot 2026-07-25 235303" src="https://github.com/user-attachments/assets/4934a037-0f76-4813-8c6a-3fe7d0534c1c" />
+
 
 ---
 
 ## 🔍 New Research Workspace
 
-![New Research](./screenshots/new-research.png)
+<img width="1185" height="605" alt="Screenshot 2026-07-25 234503" src="https://github.com/user-attachments/assets/835f6551-b330-46b0-9c69-6e563f65de49" />
+
 
 ---
 
-## 🤖 Multi-Agent Execution
-
-![Agent Execution](./screenshots/agent-execution.png)
-
----
-
-## ⚙️ Pipeline Progress
-
-![Pipeline Progress](./screenshots/pipeline-progress.png)
-
----
-
-## 📊 Verified Research Report
-
-![Verified Report](./screenshots/verified-report.png)
-
----
 
 ## 🧠 System Architecture
 
-![Architecture](./screenshots/architecture.png)
+<img width="697" height="600" alt="Screenshot 2026-07-26 002212" src="https://github.com/user-attachments/assets/a4921dc8-cd89-4cf4-9422-ce3abc26c0c6" />
 
 # 📂 Folder Structure
 

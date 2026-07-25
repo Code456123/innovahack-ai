@@ -307,7 +307,7 @@ http://localhost:3000
 
 | Team Members |
 |---------------|
-| Prasant Rai |
+| Prashant Rai |
 | Aryan Thakur |
 | Siddarth Jadhav |
 | Shivam Chaube |

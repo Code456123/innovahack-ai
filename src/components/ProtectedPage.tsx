@@ -29,8 +29,14 @@ export function ProtectedPage({ children }: Props) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
-      console.log('[Auth] ⛔ no session — redirecting to /login');
+    if (loading) {
+      console.log('[ProtectedPage] ⏳ session loading…');
+      return;
+    }
+    if (user) {
+      console.log('[ProtectedPage] ✅ session found:', user.email);
+    } else {
+      console.log('[ProtectedPage] ⛔ no session — redirecting to /login');
       router.replace('/login');
     }
   }, [loading, user, router]);

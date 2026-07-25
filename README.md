@@ -149,38 +149,53 @@ This collaborative workflow significantly improves the reliability and transpare
 - Vercel
 
 ---
-
 # 📷 Screenshots
 
-## Login
+## 🔐 Login
 
-> Add Login Screenshot
-
----
-
-## Dashboard
-
-> Add Dashboard Screenshot
+![Login](./screenshots/login.png)
 
 ---
 
-## Research Workspace
+## 📝 Sign Up
 
-> Add Research Screenshot
-
----
-
-## Agent Execution
-
-> Add Agent Progress Screenshot
+![Sign Up](./screenshots/signup.png)
 
 ---
 
-## Final Verified Report
+## 🏠 Dashboard
 
-> Add Report Screenshot
+![Dashboard](./screenshots/dashboard.png)
 
 ---
+
+## 🔍 New Research Workspace
+
+![New Research](./screenshots/new-research.png)
+
+---
+
+## 🤖 Multi-Agent Execution
+
+![Agent Execution](./screenshots/agent-execution.png)
+
+---
+
+## ⚙️ Pipeline Progress
+
+![Pipeline Progress](./screenshots/pipeline-progress.png)
+
+---
+
+## 📊 Verified Research Report
+
+![Verified Report](./screenshots/verified-report.png)
+
+---
+
+## 🧠 System Architecture
+
+![Architecture](./screenshots/architecture.png)
 
 # 📂 Folder Structure
 
@@ -303,14 +318,23 @@ http://localhost:3000
 
 # 👨‍💻 Team
 
-| Name  |
-| **Prasant Rai**  |
-| **Aryan Thakur**  |
-| **Siddarth Jadhav** |
-| **Shivam Chaube** |
----
+| Team Members |
+|---------------|
+| Prasant Rai |
+| Aryan Thakur |
+| Siddarth Jadhav |
+| Shivam Chaube |
 
 ---
+<p align="center">
+
+🏆 Built for **InnovaHack 2026 – Generative AI Domain**
+
+⭐ Autonomous Multi-Agent Research & Fact Verification System
+
+🚀 Live Demo: https://innovahack-ai.vercel.app
+
+</p>
 
 # 🌐 Live Demo
 

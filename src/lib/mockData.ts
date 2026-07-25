@@ -112,11 +112,10 @@ Despite rapid adoption, algorithmic bias in historical training data remains a p
       },
     ],
     agents: [
-      { name: 'Research Agent', status: 'Completed', timeTaken: '42s', description: 'Scanned 14,200 papers & clinical trial registers' },
-      { name: 'Verification Agent', status: 'Completed', timeTaken: '1m 10s', description: 'Cross-checked 38 core factual claims' },
-      { name: 'Contradiction Detector', status: 'Completed', timeTaken: '45s', description: 'Detected 1 statistical discrepancy between sources' },
-      { name: 'Citation Generator', status: 'Completed', timeTaken: '20s', description: 'Generated IEEE & APA formatted citations' },
-      { name: 'Report Builder', status: 'Completed', timeTaken: '45s', description: 'Synthesized final confidence score and executive report' },
+      { name: 'Research Agent',         status: 'Completed', timeTaken: '42s',   description: 'Scanned 14,200 papers & clinical trial registers' },
+      { name: 'Verification Agent',     status: 'Completed', timeTaken: '1m 10s', description: 'Cross-checked 38 core factual claims' },
+      { name: 'Contradiction Detector', status: 'Completed', timeTaken: '45s',   description: 'Detected 1 statistical discrepancy between sources' },
+      { name: 'Synthesis Agent',        status: 'Completed', timeTaken: '45s',   description: 'Synthesized final confidence score and executive report' },
     ],
   },
   {
@@ -161,11 +160,10 @@ As fault-tolerant quantum hardware scales beyond 1,000 logical qubits, legacy RS
       },
     ],
     agents: [
-      { name: 'Research Agent', status: 'Completed', timeTaken: '30s', description: 'Gathered cryptography whitepapers' },
-      { name: 'Verification Agent', status: 'Completed', timeTaken: '40s', description: 'Verified NIST specs' },
+      { name: 'Research Agent',         status: 'Completed', timeTaken: '30s', description: 'Gathered cryptography whitepapers' },
+      { name: 'Verification Agent',     status: 'Completed', timeTaken: '40s', description: 'Verified NIST specs' },
       { name: 'Contradiction Detector', status: 'Completed', timeTaken: '20s', description: 'Zero contradictions found' },
-      { name: 'Citation Generator', status: 'Completed', timeTaken: '15s', description: 'Citations structured' },
-      { name: 'Report Builder', status: 'Completed', timeTaken: '30s', description: 'Report rendered' },
+      { name: 'Synthesis Agent',        status: 'Completed', timeTaken: '30s', description: 'Report synthesized' },
     ],
   },
   {
@@ -206,11 +204,10 @@ Next-generation 2nm and 1.4nm nodes heavily rely on High-Numerical Aperture Extr
       },
     ],
     agents: [
-      { name: 'Research Agent', status: 'Completed', timeTaken: '50s', description: 'Analyzed supply chain telemetry' },
-      { name: 'Verification Agent', status: 'Completed', timeTaken: '1m 20s', description: 'Verified node specifications' },
-      { name: 'Contradiction Detector', status: 'Completed', timeTaken: '35s', description: 'Checked foundry reports' },
-      { name: 'Citation Generator', status: 'Completed', timeTaken: '20s', description: 'Generated sources' },
-      { name: 'Report Builder', status: 'Completed', timeTaken: '1m 00s', description: 'Final report built' },
+      { name: 'Research Agent',         status: 'Completed', timeTaken: '50s',   description: 'Analyzed supply chain telemetry' },
+      { name: 'Verification Agent',     status: 'Completed', timeTaken: '1m 20s', description: 'Verified node specifications' },
+      { name: 'Contradiction Detector', status: 'Completed', timeTaken: '35s',   description: 'Checked foundry reports' },
+      { name: 'Synthesis Agent',        status: 'Completed', timeTaken: '1m 00s', description: 'Final report synthesized' },
     ],
   },
 ];

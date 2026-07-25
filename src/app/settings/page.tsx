@@ -4,24 +4,36 @@ import React, { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 import { Settings as SettingsIcon, User, Bell, Palette, Key, Check, Save, Sparkles, Shield } from 'lucide-react';
-import { getStoredUserProfile, updateUserProfileStore } from '@/lib/store';
+import { useAuth, getUserDisplayName, getUserAvatar, getUserEmail } from '@/lib/auth';
 import { UserProfile } from '@/types';
 
-import { initialUserProfile } from '@/lib/mockData';
-
 export default function SettingsPage() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'profile' | 'appearance' | 'notifications' | 'api'>('profile');
-  const [profile, setProfile] = useState<UserProfile>(initialUserProfile);
+  const [mobileOpen,  setMobileOpen]  = useState(false);
+  const [activeTab,   setActiveTab]   = useState<'profile' | 'appearance' | 'notifications' | 'api'>('profile');
+  const { user } = useAuth();
+  const realProfile: Partial<UserProfile> = {
+    fullName: getUserDisplayName(user),
+    email:    getUserEmail(user),
+    avatar:   getUserAvatar(user),
+  };
+  const [profile, setProfile] = useState<UserProfile>({
+    fullName: '', username: '', email: '', avatar: '',
+    bio: '', theme: 'dark', language: 'English (US)',
+    notifications: { emailAlerts: true, reportComplete: true, weeklyDigest: false },
+    defaultMode: 'Deep Research',
+  });
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
-    setProfile(getStoredUserProfile());
-  }, []);
+    if (user) {
+      setProfile((prev) => ({ ...prev, ...realProfile }));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    updateUserProfileStore(profile);
+    // Profile updates are cosmetic — real name/avatar come from Google
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 2500);
   };
@@ -173,9 +185,7 @@ export default function SettingsPage() {
                         key={t}
                         type="button"
                         onClick={() => {
-                          const nextProfile = { ...profile, theme: t as any };
-                          setProfile(nextProfile);
-                          updateUserProfileStore(nextProfile);
+                          setProfile((prev) => ({ ...prev, theme: t as 'dark' | 'light' | 'system' }));
                         }}
                         className={`py-3 px-4 rounded-xl border text-center text-xs font-semibold capitalize transition-all ${
                           profile.theme === t

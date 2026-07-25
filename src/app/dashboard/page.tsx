@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
+import { ProtectedPage } from '@/components/ProtectedPage';
 import {
   Sparkles,
   Search,
@@ -68,10 +69,11 @@ export default function DashboardPage() {
   const totalSearches = reports.length;
   const avgConfidence = reports.length
     ? Math.round(reports.reduce((acc, curr) => acc + curr.confidence, 0) / reports.length)
-    : 94;
+    : 0;
   const savedCount = reports.filter((r) => r.saved).length;
 
   return (
+    <ProtectedPage>
     <div className="min-h-screen bg-[#030712] text-white flex">
       {/* Sidebar */}
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
@@ -95,7 +97,7 @@ export default function DashboardPage() {
                 Welcome back, <span className="text-gradient">Researcher</span>
               </h1>
               <p className="text-sm text-slate-300 mt-1">
-                Enter any scientific topic or claim to deploy 5 parallel research & verification agents.
+                Enter any scientific topic or claim to deploy 4 sequential research & verification agents.
               </p>
 
               {/* Quick Search Box */}
@@ -156,7 +158,7 @@ export default function DashboardPage() {
                 <span className="text-xs font-mono">Active Agents</span>
                 <Layers className="w-4 h-4 text-[#EC4899]" />
               </div>
-              <div className="text-2xl sm:text-3xl font-bold text-white">5/5</div>
+              <div className="text-2xl sm:text-3xl font-bold text-white">4/4</div>
               <p className="text-[11px] text-emerald-400 font-mono mt-1 flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3" /> All systems online
               </p>
@@ -286,5 +288,6 @@ export default function DashboardPage() {
         </main>
       </div>
     </div>
+    </ProtectedPage>
   );
 }

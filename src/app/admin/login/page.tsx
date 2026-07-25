@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Lock, Mail, Key, ArrowRight, ShieldAlert, Sparkles, Cpu, CheckCircle2 } from 'lucide-react';
-import { updateUserProfileStore } from '@/lib/store';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -29,11 +28,6 @@ export default function AdminLoginPage() {
 
       // Save admin session state in localStorage
       localStorage.setItem('verigen_admin_authenticated', 'true');
-      updateUserProfileStore({
-        fullName: 'Admin Overseer',
-        username: 'admin_root',
-        email: email,
-      });
 
       router.push('/admin');
     }, 800);

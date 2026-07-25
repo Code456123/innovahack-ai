@@ -209,7 +209,7 @@ function ReportContent() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
                   <div className="text-xs font-mono text-slate-400">Sources Analyzed</div>
-                  <div className="text-xl font-bold text-white mt-1">{report.sources.length * 8} Repositories</div>
+                  <div className="text-xl font-bold text-white mt-1">{report.sources.length} Sources</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
                   <div className="text-xs font-mono text-slate-400">Verified Assertions</div>

@@ -27,7 +27,7 @@ export interface Source {
   reliability: number;
   date: string;
   url: string;
-  type: 'Government' | 'Research Papers' | 'News' | 'Books';
+  type: 'Government' | 'Research Papers' | 'News' | 'Books' | 'Encyclopedia' | 'Article' | 'Reference';
 }
 
 export interface AgentProgress {

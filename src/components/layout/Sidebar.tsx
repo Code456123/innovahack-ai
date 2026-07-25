@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -12,11 +12,11 @@ import {
   Settings,
   Sparkles,
   LogOut,
-  Menu,
   X,
   ShieldCheck,
   ExternalLink,
 } from 'lucide-react';
+import { useAuth } from '@/lib/auth';
 
 interface SidebarProps {
   mobileOpen?: boolean;
@@ -25,6 +25,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
   const pathname = usePathname();
+  const { signOut } = useAuth();
 
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -67,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
           <Sparkles className="w-3.5 h-3.5 text-[#06B6D4]" /> Autonomous Engine
         </div>
         <p className="text-slate-300 text-[11px] leading-relaxed">
-          5 agents cross-verifying live research sources.
+          4 agents cross-verifying live research sources.
         </p>
       </div>
 
@@ -109,12 +110,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) =
           <span className="text-[10px] bg-white/10 text-slate-300 px-1.5 py-0.5 rounded">Public</span>
         </Link>
 
-        <Link
-          href="/login"
-          className="flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-colors"
+        <button
+          onClick={signOut}
+          className="flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-colors w-full"
         >
           <LogOut className="w-3.5 h-3.5" /> Sign Out
-        </Link>
+        </button>
       </div>
     </div>
   );

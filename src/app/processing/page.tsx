@@ -10,7 +10,6 @@ import {
   Clock,
   Search,
   Layers,
-  FileText,
   Sparkles,
   ArrowRight,
   XCircle,
@@ -27,14 +26,16 @@ function ProcessingContent() {
   const [progress, setProgress] = useState(15);
   const [activeStep, setActiveStep] = useState(0);
 
+  // Real 4-agent pipeline (matches route.ts)
   const agents = [
-    { name: 'Research Agent', role: 'Scanning 14,000+ sources & news archives', icon: Search },
-    { name: 'Verification Agent', role: 'Cross-checking statistical assertions', icon: ShieldCheck },
-    { name: 'Contradiction Detector', role: 'Auditing source discrepancies', icon: Layers },
-    { name: 'Citation Generator', role: 'Formatting APA/IEEE citations', icon: FileText },
-    { name: 'Report Builder', role: 'Synthesizing final dossier & confidence score', icon: Sparkles },
+    { name: 'Research Agent',         role: 'Mining primary sources & academic archives', icon: Search },
+    { name: 'Verification Agent',     role: 'Cross-checking statistical assertions',       icon: ShieldCheck },
+    { name: 'Contradiction Detector', role: 'Auditing source discrepancies',               icon: Layers },
+    { name: 'Synthesis Agent',        role: 'Synthesizing final dossier & confidence score', icon: Sparkles },
   ];
 
+  // Cosmetic progress bar — real API call already completed before this page mounted.
+  // 4 steps, one per real agent, ~1s each. Auto-redirect when done.
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prev) => {
@@ -42,17 +43,24 @@ function ProcessingContent() {
           clearInterval(timer);
           return 100;
         }
-        const next = prev + 17;
-        if (next > 20 && next <= 40) setActiveStep(1);
-        else if (next > 40 && next <= 65) setActiveStep(2);
-        else if (next > 65 && next <= 85) setActiveStep(3);
-        else if (next > 85) setActiveStep(4);
+        const next = prev + 25; // 4 steps of 25%
+        if (next > 25  && next <= 50)  setActiveStep(1);
+        else if (next > 50  && next <= 75)  setActiveStep(2);
+        else if (next > 75)               setActiveStep(3);
         return next > 100 ? 100 : next;
       });
     }, 900);
 
     return () => clearInterval(timer);
   }, []);
+
+  // Auto-navigate to report when cosmetic progress finishes
+  useEffect(() => {
+    if (progress >= 100) {
+      const t = setTimeout(() => router.push(`/report?id=${reportId}`), 500);
+      return () => clearTimeout(t);
+    }
+  }, [progress, reportId, router]);
 
   return (
     <div className="min-h-screen bg-[#030712] text-white flex">

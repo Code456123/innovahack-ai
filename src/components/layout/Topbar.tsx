@@ -1,12 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Search, Bell, Menu, Sparkles } from 'lucide-react';
-import { getStoredUserProfile } from '@/lib/store';
-import { UserProfile } from '@/types';
-import { initialUserProfile } from '@/lib/mockData';
+import { Search, Bell, Menu, Sparkles, LogOut } from 'lucide-react';
+import { useAuth, getUserDisplayName, getUserAvatar, getUserEmail } from '@/lib/auth';
 
 interface TopbarProps {
   onMenuClick?: () => void;
@@ -14,20 +12,14 @@ interface TopbarProps {
 
 export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
   const router = useRouter();
-  const [profile, setProfile] = useState<UserProfile>(initialUserProfile);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showNotifications, setShowNotifications] = useState(false);
+  const { user, loading, signOut } = useAuth();
+  const [searchQuery,        setSearchQuery]        = useState('');
+  const [showNotifications,  setShowNotifications]  = useState(false);
+  const [showProfileMenu,    setShowProfileMenu]     = useState(false);
 
-  useEffect(() => {
-    // Synchronize client-side user profile after mount to prevent SSR hydration mismatch
-    setProfile(getStoredUserProfile());
-
-    const handleUpdate = () => {
-      setProfile(getStoredUserProfile());
-    };
-    window.addEventListener('verigen_user_updated', handleUpdate);
-    return () => window.removeEventListener('verigen_user_updated', handleUpdate);
-  }, []);
+  const displayName = loading ? '' : getUserDisplayName(user);
+  const avatarUrl   = loading ? '' : getUserAvatar(user);
+  const email       = loading ? '' : getUserEmail(user);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,10 +65,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
           <span>New Research</span>
         </Link>
 
-        {/* Notifications Dropdown */}
+        {/* Notifications */}
         <div className="relative">
           <button
-            onClick={() => setShowNotifications(!showNotifications)}
+            onClick={() => { setShowNotifications(!showNotifications); setShowProfileMenu(false); }}
             className="relative p-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
           >
             <Bell className="w-4 h-4" />
@@ -87,47 +79,73 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuClick }) => {
             <div className="absolute right-0 mt-2 w-80 bg-[#111827] border border-white/10 rounded-2xl shadow-2xl p-4 z-50 text-xs space-y-3">
               <div className="flex items-center justify-between border-b border-white/10 pb-2">
                 <span className="font-semibold text-white">Notifications</span>
-                <span className="text-[10px] text-[#06B6D4] bg-[#06B6D4]/10 px-2 py-0.5 rounded-full">2 New</span>
+                <span className="text-[10px] text-[#06B6D4] bg-[#06B6D4]/10 px-2 py-0.5 rounded-full">System</span>
               </div>
-              <div className="space-y-2">
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                  <p className="font-medium text-slate-200">Verification Complete</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Healthcare AI Diagnostics report is verified (94% confidence).</p>
-                  <span className="text-[9px] text-slate-500 font-mono mt-1 block">10 minutes ago</span>
-                </div>
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                  <p className="font-medium text-slate-200">Contradiction Flagged</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">1 statistic mismatch detected in Quantum Encryption analysis.</p>
-                  <span className="text-[9px] text-slate-500 font-mono mt-1 block">1 hour ago</span>
-                </div>
+              <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
+                <p className="font-medium text-slate-200">Welcome to VeriGen AI</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  You are signed in as {email || displayName}. Start a new research query!
+                </p>
               </div>
             </div>
           )}
         </div>
 
-        {/* User Profile Badge */}
-        <Link
-          href="/settings"
-          className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
-          suppressHydrationWarning
-        >
-          <img
-            src={profile.avatar}
-            alt={profile.fullName}
-            className="w-7 h-7 rounded-lg object-cover ring-2 ring-[#6C63FF]/50"
-            onError={(e) => {
-              (e.target as HTMLElement).style.display = 'none';
-            }}
-          />
-          <div className="hidden lg:block text-left" suppressHydrationWarning>
-            <div className="text-xs font-semibold text-white leading-none" suppressHydrationWarning>
-              {profile.fullName}
+        {/* User Profile Badge + dropdown */}
+        <div className="relative">
+          {loading ? (
+            /* Skeleton placeholder while session is loading */
+            <div className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-xl bg-white/5 border border-white/10">
+              <div className="w-7 h-7 rounded-lg bg-white/10 animate-pulse" />
+              <div className="hidden lg:block space-y-1">
+                <div className="w-20 h-2.5 rounded bg-white/10 animate-pulse" />
+                <div className="w-28 h-2 rounded bg-white/5 animate-pulse" />
+              </div>
             </div>
-            <div className="text-[10px] text-[#06B6D4] font-mono mt-0.5" suppressHydrationWarning>
-              @{profile.username}
+          ) : (
+            <button
+              onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
+              className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={avatarUrl}
+                alt={displayName}
+                className="w-7 h-7 rounded-lg object-cover ring-2 ring-[#6C63FF]/50"
+                referrerPolicy="no-referrer"
+                onError={(e) => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName || 'U')}&background=6C63FF&color=fff`; }}
+              />
+              <div className="hidden lg:block text-left">
+                <div className="text-xs font-semibold text-white leading-none">{displayName}</div>
+                <div className="text-[10px] text-[#06B6D4] font-mono mt-0.5 truncate max-w-[120px]">{email}</div>
+              </div>
+            </button>
+          )}
+
+          {/* Profile dropdown menu */}
+          {showProfileMenu && !loading && (
+            <div className="absolute right-0 mt-2 w-52 bg-[#111827] border border-white/10 rounded-2xl shadow-2xl p-2 z-50 text-xs space-y-1">
+              <div className="px-3 py-2 border-b border-white/10 mb-1">
+                <div className="font-semibold text-white text-sm truncate">{displayName}</div>
+                <div className="text-[10px] text-slate-400 font-mono truncate">{email}</div>
+              </div>
+              <Link
+                href="/settings"
+                onClick={() => setShowProfileMenu(false)}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Settings
+              </Link>
+              <button
+                onClick={() => { setShowProfileMenu(false); signOut(); }}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
+              >
+                <LogOut className="w-3.5 h-3.5" /> Sign Out
+              </button>
             </div>
-          </div>
-        </Link>
+          )}
+        </div>
+
       </div>
     </header>
   );

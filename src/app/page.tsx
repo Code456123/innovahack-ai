@@ -208,7 +208,7 @@ export default function LandingPage() {
             <div className="text-xs text-slate-400 font-mono mt-1">Verification Accuracy</div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-extrabold text-[#6C63FF]">5 Agents</div>
+            <div className="text-3xl sm:text-4xl font-extrabold text-[#6C63FF]">4 Agents</div>
             <div className="text-xs text-slate-400 font-mono mt-1">Parallel Execution</div>
           </div>
           <div>

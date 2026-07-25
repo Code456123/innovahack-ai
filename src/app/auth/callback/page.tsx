@@ -1,66 +1,72 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// /auth/callback — client-side PKCE code exchange
+// /auth/callback
 //
-// Why client-side (not server route)?
-//   Our Supabase client uses browser localStorage. Server-side exchange writes
-//   to server memory / cookies — the browser localStorage never gets updated.
-//   Running exchangeCodeForSession() in the browser lets Supabase persist the
-//   session to localStorage directly.
+// detectSessionInUrl: true (set in supabase.ts) automatically reads the
+// ?code= param from the URL and calls exchangeCodeForSession() internally
+// as soon as the Supabase client initialises on this page.
+// We must NOT call exchangeCodeForSession() manually — doing so a second time
+// tries to consume the already-used PKCE verifier and throws:
+//   "both auth code and code verifier should be non-empty"
 //
-// Why useRef guard?
-//   React 18 Strict Mode (and re-renders) can invoke useEffect twice.
-//   PKCE code verifier is single-use: the first call consumes it; the second
-//   gets "both auth code and code verifier should be non-empty" error.
-//   hasRun.current ensures we call exchangeCodeForSession exactly ONCE.
+// Strategy:
+//   1. Listen for the SIGNED_IN event via onAuthStateChange → go to /dashboard
+//   2. 4-second fallback: call getSession() once; if session exists → dashboard,
+//      otherwise → /login?error=timeout
 // ─────────────────────────────────────────────────────────────────────────────
 export default function AuthCallbackPage() {
-  const router  = useRouter();
-  const hasRun  = useRef(false); // guard against double-invocation
+  const router = useRouter();
 
   useEffect(() => {
-    // ── Guard: run only once ────────────────────────────────────────────────
-    if (hasRun.current) return;
-    hasRun.current = true;
+    console.log('[/auth/callback] 🔄 Waiting for Supabase to auto-process PKCE code…');
 
-    const handleCallback = async () => {
-      console.log('[/auth/callback] 🔄 Starting PKCE code exchange…');
-      console.log('[/auth/callback] URL:', window.location.href);
+    let didNavigate = false; // prevent double navigation
 
-      // Pass the full current URL — Supabase extracts ?code= and the stored
-      // PKCE code_verifier from localStorage automatically.
-      const { data, error } = await supabase.auth.exchangeCodeForSession(
-        window.location.href,
-      );
+    // ── 1. Auth state listener ────────────────────────────────────────────────
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[/auth/callback] onAuthStateChange event:', event, '| user:', session?.user?.email ?? 'none');
 
-      if (error) {
-        console.error(
-          '[/auth/callback] ❌ exchangeCodeForSession error:',
-          error.message,
-          error,
-        );
-        router.replace(`/login?error=${encodeURIComponent(error.message)}`);
-        return;
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+        if (didNavigate) return;
+        didNavigate = true;
+        console.log('[/auth/callback] ✅ Session found via', event, '— navigating to /dashboard');
+        subscription.unsubscribe();
+        router.replace('/dashboard');
       }
+    });
 
-      console.log(
-        '[/auth/callback] ✅ Session exchanged! User:',
-        data.session?.user?.email ?? '(no email)',
-      );
+    // ── 2. 4-second fallback ─────────────────────────────────────────────────
+    const timer = setTimeout(async () => {
+      if (didNavigate) return;
 
-      // Session is now in localStorage — navigate to dashboard
-      router.replace('/dashboard');
+      console.warn('[/auth/callback] ⚠️ No SIGNED_IN event after 4s — checking session manually…');
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session) {
+        console.log('[/auth/callback] ✅ Session found via fallback getSession() — navigating to /dashboard');
+        didNavigate = true;
+        subscription.unsubscribe();
+        router.replace('/dashboard');
+      } else {
+        console.error('[/auth/callback] ❌ No session after 4s — sending to /login');
+        didNavigate = true;
+        subscription.unsubscribe();
+        router.replace('/login?error=timeout');
+      }
+    }, 4000);
+
+    return () => {
+      clearTimeout(timer);
+      subscription.unsubscribe();
     };
-
-    handleCallback();
   }, [router]);
 
-  // ── Loading UI ─────────────────────────────────────────────────────────────
+  // ── Loading UI ──────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#030712] flex flex-col items-center justify-center gap-5">
       <div className="relative w-16 h-16">

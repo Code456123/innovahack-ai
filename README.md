@@ -303,24 +303,12 @@ http://localhost:3000
 
 # 👨‍💻 Team
 
-| Name | Role |
-|------|------|
-| **Prasant Rai** | Full Stack Developer |
-| **Aryan Thakur** | Full Stack Developer |
-| **Siddarth Jadhav** | Full Stack Developer |
-| **Shivam Chaube** | Full Stack Developer |
-
+| Name  |
+| **Prasant Rai**  |
+| **Aryan Thakur**  |
+| **Siddarth Jadhav** |
+| **Shivam Chaube** |
 ---
-
-# 🏆 Hackathon
-
-**InnovaHack 2026**
-
-### Domain 3 – Generative AI
-
-**Problem Statement**
-
-> Autonomous Multi-Agent Research & Fact Verification System
 
 ---
 
@@ -338,6 +326,6 @@ If you like this project, consider giving the repository a ⭐ to support our wo
 
 <div align="center">
 
-Made with ❤️ by Team VeriGen AI
+Made with ❤️ by Team Super
 
 </div>

@@ -1,49 +1,66 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// /auth/callback — client-side OAuth code exchange
+// /auth/callback — client-side PKCE code exchange
 //
 // Why client-side (not server route)?
-// Our Supabase client uses browser localStorage for session storage.
-// Server-side exchangeCodeForSession() writes to server memory / response
-// cookies, but the browser-side Supabase instance never sees those.
-// Here we run exchangeCodeForSession() IN the browser so it can persist
-// the session to localStorage automatically — exactly like a normal login.
+//   Our Supabase client uses browser localStorage. Server-side exchange writes
+//   to server memory / cookies — the browser localStorage never gets updated.
+//   Running exchangeCodeForSession() in the browser lets Supabase persist the
+//   session to localStorage directly.
+//
+// Why useRef guard?
+//   React 18 Strict Mode (and re-renders) can invoke useEffect twice.
+//   PKCE code verifier is single-use: the first call consumes it; the second
+//   gets "both auth code and code verifier should be non-empty" error.
+//   hasRun.current ensures we call exchangeCodeForSession exactly ONCE.
 // ─────────────────────────────────────────────────────────────────────────────
 export default function AuthCallbackPage() {
-  const router = useRouter();
+  const router  = useRouter();
+  const hasRun  = useRef(false); // guard against double-invocation
 
   useEffect(() => {
-    const handleCallback = async () => {
-      console.log('[/auth/callback] 🔄 Starting client-side code exchange…');
-      console.log('[/auth/callback] Current URL:', window.location.href);
+    // ── Guard: run only once ────────────────────────────────────────────────
+    if (hasRun.current) return;
+    hasRun.current = true;
 
-      // Pass the entire current URL — Supabase extracts the code param itself
+    const handleCallback = async () => {
+      console.log('[/auth/callback] 🔄 Starting PKCE code exchange…');
+      console.log('[/auth/callback] URL:', window.location.href);
+
+      // Pass the full current URL — Supabase extracts ?code= and the stored
+      // PKCE code_verifier from localStorage automatically.
       const { data, error } = await supabase.auth.exchangeCodeForSession(
         window.location.href,
       );
 
       if (error) {
-        console.error('[/auth/callback] ❌ exchangeCodeForSession error:', error.message, error);
+        console.error(
+          '[/auth/callback] ❌ exchangeCodeForSession error:',
+          error.message,
+          error,
+        );
         router.replace(`/login?error=${encodeURIComponent(error.message)}`);
         return;
       }
 
       console.log(
         '[/auth/callback] ✅ Session exchanged! User:',
-        data.session?.user?.email ?? '(no email in session)',
+        data.session?.user?.email ?? '(no email)',
       );
+
+      // Session is now in localStorage — navigate to dashboard
       router.replace('/dashboard');
     };
 
     handleCallback();
   }, [router]);
 
-  // ── Loading UI while exchange is in progress ───────────────────────────────
+  // ── Loading UI ─────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#030712] flex flex-col items-center justify-center gap-5">
       <div className="relative w-16 h-16">
